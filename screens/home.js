@@ -8,172 +8,160 @@ import {
     StatusBar,
     TextInput,
     Button,
+    Dimensions,
     Alert,
   ActivityIndicator,
-  AsyncStorage,
 } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 
 import Comp from '../components/comp';
 import Settings from './settings'; 
-import Other from './other'; 
-import Profile from './profile'; 
-import drawer from './drawer';
+import Notifications from "../screens/Noti";
+import Messages from "../screens/msg";
 
-
+import { createBottomTabNavigator,BottomTabBar } from "react-navigation-tabs";
 import {createAppContainer,  createSwitchNavigator  } from 'react-navigation';
 import {createStackNavigator} from 'react-navigation-stack';
-import { createBottomTabNavigator } from 'react-navigation-tabs';
 import Welcome from './welcome'; 
+import Profile from './profile';
+import MapView,{PROVIDER_GOOGLE} from 'react-native-maps';
+import Geolocation from 'react-native-geolocation-service';
 
 
+const {width, height} = Dimensions.get('window')
+
+const SCREEN_HEIGHT = height
+const SCREEN_WIDTH = width
+const ASPECT_RATIO = width / height
+const LATITUDE_DELTA = 0.0922
+const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO
 class Home extends React.Component {
 
 static navigationOptions = { title: 'Welcome to the app!',}; 
-
-  constructor(){
-    super();
-    this.state={
-      email:'jhjhk',
-      userName:'jkk',}
-    
-    this.handleInputs=this.handleInputs.bind(this);
+constructor() {
+  super()
+  this.state = {
+    initialPosition: {
+      latitude: 0,
+      longitude: 0,
+      latitudeDelta: 0,
+      longitudeDelta: 0,
+    },
   }
-
-handleInputs= (userName,email) =>{
-   this.setState({userName });
-  this.setState({ email});
-  //this.setState({ userName:userName});
-     
-  setTimeout(()=>{alert("The userName is: "+ this.state.userName+ " and the email is: "+this.state.email );},3000);
-
 }
 
-  render() {
-    return (
-      <View style = {styles.container}>
-           {/* <Comp  handleInputs={this.handleInputs} /> */}
-         <View style={styles.buttonContainer}>
-         <Button title="Show me more of the app"  color="#f194ff" onPress={this._showMoreApp} />
-         </View>
-         
-         <View style={styles.buttonContainer}>
-         <Button title="Show my info"  color="#f194ff" onPress={this._showMyInfo} />
-         </View>
+// componentDidMount =(  )=> {
+//   // const hasLocationPermission = this.hasLocationPermission();
 
-         <View style={styles.buttonContainer}>
-         <Button title="Actually, sign me out :)" color="#f194ff" onPress={this._signOutAsync} />
-         </View>
+//   //   if (!hasLocationPermission) return;
+//   Geolocation.getCurrentPosition((position) => {
+//     var lat = parseFloat(position.coords.latitude)
+//     var long = parseFloat(position.coords.longitude)
+//     var initialRegion = {
+//       latitude: lat,
+//       longitude: long,
+//       latitudeDelta: LATITUDE_DELTA,
+//       longitudeDelta: LONGITUDE_DELTA,
+//     }
+
+//     this.setState({initialPosition: initialRegion})
+  
+//   },
+//   (error) => alert(JSON.stringify(error)),
+//   {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000});
+// }
+
+// hasLocationPermission = async () => {
+//   if (Platform.OS === 'ios' ||
+//       (Platform.OS === 'android' && Platform.Version < 23)) {
+//     return true;
+//   }
+
+//   const hasPermission = await PermissionsAndroid.check(
+//     PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
+//   );
+
+//   if (hasPermission) return true;
+
+//   const status = await PermissionsAndroid.request(
+//     PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
+//   );
+
+//   if (status === PermissionsAndroid.RESULTS.GRANTED) return true;
+
+//   if (status === PermissionsAndroid.RESULTS.DENIED) {
+//     ToastAndroid.show('Location permission denied by user.', ToastAndroid.LONG);
+//   } else if (status === PermissionsAndroid.RESULTS.NEVER_ASK_AGAIN) {
+//     ToastAndroid.show('Location permission revoked by user.', ToastAndroid.LONG);
+//   }
+
+//   return false;
+// }
+
+
+  render() {
+    
+    return (
+      <View style = {styles.container}>          
+        
+     <MapView
+       provider={PROVIDER_GOOGLE} // remove if not using Google Maps
+       style={styles.map}
+       initialRegion={this.state.initialPosition}
+     >
+     </MapView>
               
            </View>
 
           
     )
   }
-  _showMyInfo = () => {
-    this.props.navigation.navigate('Profile');
-  };
-
-  _showMoreApp = () => {
-    this.props.navigation.navigate('Other');
-  };
-
-  _signOutAsync = async () => {
-    await AsyncStorage.clear();
-    this.props.navigation.navigate('Welcome');
-  };
-
+  
 
 }
 
-const H = createStackNavigator({
-  Home: {screen:Home,},
-},
-{
-  initialRouteName: 'Home',
-
-}
-);
-const S = createStackNavigator({
+const HomeStack = createStackNavigator({
   Home: Home,
-  Settings:Settings,
+  Notifications: Notifications,
+}, {
+  headerMode: 'none'
+});
 
-},
-{
-  initialRouteName: 'Settings',
+const NotifiStack = createStackNavigator({
+ Notifications:Notifications,
+ Messages:Messages,
+});
 
-}
-);
-
-
-const P = createStackNavigator({
-  Home:Home,
-  Profile: Profile,
-},
-
-{
-  initialRouteName: 'Profile',
-
-}
-);
-
+const MsgStack = createStackNavigator({
+  Messages:Messages,
+  Profile:Profile,
+ });
 
 const styles = StyleSheet.create({
-  scrollView: {
-    backgroundColor: 'red',
-  },
-  engine: {
-    position: 'absolute',
-    right: 0,
-  },
-  body: {
-    fontSize: 45,
-    marginTop: 220,
-    padding:50 ,
-
-  },
+  
   container: {
-    paddingTop: 23
+    flex:1,
  },
- buttonContainer: {
-  margin: 20,
-  color: 'blue',
-  marginTop: 32,
-  marginBottom: 32,
-    marginVertical: 8,
-    borderBottomColor: '#737373',
-    paddingTop:10
+
+map:{
+  flex:1,
 },
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
   input: {
     margin: 15,
     height: 40,
     borderColor: '#7a42f4',
     borderWidth: 1},
-
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-  footer: {
-    fontSize: 12,
-    fontWeight: '600',
-    padding: 4,
-    paddingRight: 12,
-    textAlign: 'right',
-  },
+  
 });
+const TabScreens = createBottomTabNavigator(
+  {
+    Home:HomeStack,
+    Notifications:NotifiStack,
+    Messages:MsgStack,
 
+  },
+ 
+);
 
-
-  export default createAppContainer(createBottomTabNavigator({Home:H,Settings:S,Profile:P}));
+export default Home;
+  //export default createAppContainer(TabScreens);

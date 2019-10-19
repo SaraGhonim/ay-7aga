@@ -1,12 +1,12 @@
 import React from 'react';
 import {
   ActivityIndicator,
-  AsyncStorage,
   StatusBar,
   StyleSheet,
   View,
   Button,
 } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 
 class WhereToGo extends React.Component {
   componentDidMount() {
@@ -15,11 +15,11 @@ class WhereToGo extends React.Component {
 
   // Fetch the token from storage then navigate to our appropriate place
   _bootstrapAsync = async() => {
-   const userToken = false;
+   const userToken = true;
 
     // This will switch to the App screen or Auth screen and this loading
     // screen will be unmounted and thrown away.
-    this.props.navigation.navigate(userToken ? 'App' : 'Auth');
+    this.props.navigation.navigate(userToken ? 'Drawer' : 'AuthStack');
 
   };
 

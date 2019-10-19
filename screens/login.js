@@ -1,13 +1,13 @@
 import React from 'react';
 import {
   ActivityIndicator,
-  AsyncStorage,
   StatusBar,
   StyleSheet,
   View,
   TextInput,
   Button,
 } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 
 class Login extends React.Component {
   static navigationOptions = { title: 'Log in to the app!',}; 

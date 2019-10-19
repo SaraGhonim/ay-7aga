@@ -8,17 +8,17 @@ class Profile extends React.Component {
   render() {
     return (
 <View>
-       <View style = {styles.container}>
-           <Button title="Edit your password" onPress={() => this.props.navigation.navigate('Other')} />               
+       <View style = {styles.buttonContainer}>
+           <Button title="Edit your password"color="#b0e0e6" onPress={() => this.props.navigation.navigate('Other')} />               
       </View>
-      <View style = {styles.container}>
-           <Button title="Edit your User Name" onPress={() => this.props.navigation.navigate('Other')} />               
+      <View style = {styles.buttonContainer}>
+           <Button title="Edit your User Name"color="#b0e0e6" onPress={() => this.props.navigation.navigate('Other')} />               
       </View>
-      <View style = {styles.container}>
-           <Button title="Edit your Email" onPress={() => this.props.navigation.navigate('Other')} />               
+      <View style = {styles.buttonContainer}>
+           <Button title="Edit your Email"color="#b0e0e6" onPress={() => this.props.navigation.navigate('Other')} />               
       </View>
-      <View style = {styles.container}>
-           <Button title="Your Trips" onPress={() => this.props.navigation.navigate('Other')} />               
+      <View style = {styles.buttonContainer}>
+           <Button title="Your Trips" color="#b0e0e6"onPress={() => this.props.navigation.navigate('Other')} />               
       </View>
 
 </View>
@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
  },
  buttonContainer: {
     margin: 20,
-    color: 'blue',
+    color: '#afeeee',
     marginTop: 32,
     marginBottom: 32,
       marginVertical: 8,
